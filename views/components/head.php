@@ -38,7 +38,7 @@
                 <button id="user-menu" class="relative text-white focus:outline-none">
                     <i class="fas fa-user"></i>
                 </button>
-                <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white text-black rounded-lg shadow-lg z-50">
+                <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-[20rem] bg-white text-black rounded-lg shadow-lg z-50 !top-[2rem] !right-[-18px]">
                     <?php include 'user-modal.php'; ?>
                 </div>
             </div>

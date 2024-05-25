@@ -46,6 +46,12 @@
     document.getElementById('user-menu').addEventListener('click', function() {
         var dropdown = document.getElementById('user-dropdown');
         dropdown.classList.toggle('hidden');
+
+        if (!dropdown.classList.contains('hidden')) {
+            document.body.classList.add('body-overlay');
+        } else {
+            document.body.classList.remove('body-overlay');
+        }
     });
 
     var swiper = new Swiper('.swiper-container', {
