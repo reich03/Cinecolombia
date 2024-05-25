@@ -1,65 +1,10 @@
 <?php
-$movies = [
-    [
-        "title" => "Furiosa: A Mad Max Saga",
-        "subtitle" => "De la Saga De Mad Max",
-        "release_date" => "23 May 2024",
-        "genre" => "Acción, Ciencia Ficción",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/0f45bff0c4ca-warner_furiosa_cinecol_480x670.jpg",
-        "rating" => "Exclusiva para Mayores de 15 años",
-        "duration" => "148 Min"
-    ],
-    [
-        "title" => "Kingdom of the planet of the Apes",
-        "subtitle" => "El Planeta de los Simios: Nuevo Reino",
-        "release_date" => "09 May 2024",
-        "genre" => "Acción, Ficción",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/7ab0aa509396-elplanetadelossimios_posterweb.jpg",
-        "rating" => "Recomendada para Mayores de 7 años",
-        "duration" => "150 Min"
-    ],
-    [
-        "title" => "Monkey Man",
-        "subtitle" => "El Despertar de la Bestia",
-        "release_date" => "23 May 2024",
-        "genre" => "Acción, Suspenso",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/bc2b2cce400d-mkm_cineco_pstr-dskp_480x670.png",
-        "rating" => "Exclusiva para Mayores de 15 años",
-        "duration" => "121 Min"
-    ],
-    [
-        "title" => "Capitán Avispa",
-        "subtitle" => "",
-        "release_date" => "23 May 2024",
-        "genre" => "Acción, Animación, Aventura, Familiar, Fantasía, Musical",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/be2a8aef4014-480670.jpg",
-        "rating" => "Para todo el Público",
-        "duration" => "90 Min"
-    ],
-    [
-        "title" => "Capitán Avispa",
-        "subtitle" => "",
-        "release_date" => "23 May 2024",
-        "genre" => "Acción, Animación, Aventura, Familiar, Fantasía, Musical",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/be2a8aef4014-480670.jpg",
-        "rating" => "Para todo el Público",
-        "duration" => "90 Min"
-    ],
-    [
-        "title" => "Capitán Avispa",
-        "subtitle" => "",
-        "release_date" => "23 May 2024",
-        "genre" => "Acción, Animación, Aventura, Familiar, Fantasía, Musical",
-        "img" => "/Cine-Colombia/assets/images/imagenes-prueba/be2a8aef4014-480670.jpg",
-        "rating" => "Para todo el Público",
-        "duration" => "90 Min"
-    ]
-];
+require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
 ?>
 <div class="container mx-auto mt-[8rem]">
     <h2 class="text-[20px] font-semibold pb-8 pt-6"> Pronto </h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <?php foreach ($movies as $movie) : ?>
+        <?php foreach ($movies as $movie) : ?>
             <div class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer	">
                 <img src="<?= $movie['img'] ?>" alt="<?= $movie['title'] ?>" class="w-full h-[30rem] object-cover md:object-fill">
                 <div class="p-4">
