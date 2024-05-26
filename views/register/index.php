@@ -1,10 +1,10 @@
 <?php
 require_once "./views/components/head.php";
 ?>
-<div class="pt-[8rem] bg-white  min-h-screen">
+<div class="pt-[8rem] bg-white min-h-screen">
     <main class="flex-grow mx-auto container pt-6 bg-white p-[30rem] pb-[4.5rem] rounded-lg">
         <h2 class="text-2xl font-bold mb-6">Registro</h2>
-        <form action="/register" method="post" class="space-y-6" id="registrationForm">
+        <form id="registerForm" method="post" class="space-y-6" id="registrationForm">
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Correo <span class="text-red-600">*</span></label>
                 <input type="email" id="email" name="email" class="mt-1 w-full px-4 py-2 border rounded-md bg-blue-100 active:border-blue-200 focus-visible:border-blue-200" placeholder="Correo" required>
@@ -29,34 +29,6 @@ require_once "./views/components/head.php";
             <div>
                 <label for="last_name" class="block text-sm font-medium text-gray-700">Apellidos <span class="text-red-600">*</span></label>
                 <input type="text" id="last_name" name="last_name" class="mt-1 w-full px-4 py-2 border rounded-md bg-blue-100" placeholder="Apellidos" required>
-            </div>
-            <div>
-                <label for="id_type" class="block text-sm font-medium text-gray-700">Documento de identidad <span class="text-red-600">*</span></label>
-                <div class="flex space-x-2">
-                    <select id="id_type" name="id_type" class="mt-1 px-4 py-2 border rounded-md bg-blue-100" required>
-                        <option value="CC">Cédula de Ciudadanía</option>
-                        <option value="TI">Tarjeta de Identidad</option>
-                        <option value="CE">Cédula de Extranjería</option>
-                    </select>
-                    <input type="text" id="id_number" name="id_number" class="mt-1 w-full px-4 py-2 border rounded-md bg-blue-100" placeholder="Documento de identidad" required>
-                </div>
-            </div>
-            <div>
-                <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento <span class="text-red-600">*</span></label>
-                <div class="flex space-x-2">
-                    <select id="birth_day" name="birth_day" class="mt-1 px-4 py-2 border rounded-md bg-blue-100 flex-grow" required>
-                        <?php for ($i = 1; $i <= 31; $i++) echo "<option value='$i'>$i</option>"; ?>
-                    </select>
-                    <select id="birth_month" name="birth_month" class="mt-1 px-4 py-2 border rounded-md bg-blue-100 flex-grow" required>
-                        <?php
-                        $months = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.'];
-                        foreach ($months as $index => $month) echo "<option value='" . ($index + 1) . "'>$month</option>";
-                        ?>
-                    </select>
-                    <select id="birth_year" name="birth_year" class="mt-1 px-4 py-2 border rounded-md bg-blue-100 flex-grow" required>
-                        <?php for ($i = 1950; $i <= date("Y"); $i++) echo "<option value='$i'>$i</option>"; ?>
-                    </select>
-                </div>
             </div>
             <div>
                 <label for="phone" class="block text-sm font-medium text-gray-700">Celular <span class="text-red-600">*</span></label>
@@ -101,7 +73,7 @@ require_once "./views/components/head.php";
 require_once "./views/components/footer.php";
 ?>
 
-<<script>
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registrationForm');
     const registerButton = document.getElementById('registerButton');
@@ -113,8 +85,24 @@ document.addEventListener('DOMContentLoaded', function () {
         registerButton.disabled = !allFilled;
         registerButton.classList.toggle('bg-white', !allFilled);
         registerButton.classList.toggle('bg-[#1C508D]', allFilled);
-        registerButton.classList.toggle('text-white', allFilled);
-
+        registerButton.classList.toggle('!text-white', allFilled);
     });
 });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#registerForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Cine-Colombia/register/createAccount',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('body').append(response);
+                }
+            });
+        });
+    });
 </script>

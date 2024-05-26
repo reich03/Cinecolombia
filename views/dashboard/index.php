@@ -1,5 +1,7 @@
 <?php
-require_once "./views/components/head.php"
+require_once "./views/components/head.php";
+session_start();
+$name = $_SESSION['user'];
 ?>
 <div class="pt-[8rem] bg-gray-100 bg-white">
     <main class="flex-grow mx-auto container  mt-[3rem] p-2 ">
@@ -15,7 +17,7 @@ require_once "./views/components/head.php"
         </div>
 
         <div class="container-dashboard bg-[#F5F9FF] rounded-md px-[3rem] py-[2rem] border border-[#E6F0FF] h-[20rem]">
-            <h2 class="text-2xl font-bold mb-6">BIENVENIDO JHOJAN!</h2>
+            <h2 class="text-2xl font-bold mb-6">BIENVENIDO <?= $name['nomb_cli']; ?>!</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <a href="/Cine-Colombia/dashboard/movies" class="flex items-center justify-center bg-blue-500 text-white p-4 rounded-lg shadow hover:bg-blue-600">
                     <i class="fas fa-film mr-2"></i> Administrar Películas

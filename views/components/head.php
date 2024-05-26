@@ -15,6 +15,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="flex flex-col min-h-screen">
@@ -48,7 +49,14 @@
                         <i class="fas fa-user"></i>
                     </button>
                     <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-[20rem] bg-white text-black rounded-lg shadow-lg z-50 !top-[2rem] !right-[-18px]">
-                        <?php include 'user-modal.php'; ?>
+                        <?php 
+                        session_start();
+                        if (isset($_SESSION['user'])) {
+                            include 'user-connected.php';
+                        } else {
+                            include 'user-modal.php';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
