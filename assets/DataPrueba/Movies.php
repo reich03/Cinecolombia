@@ -2,6 +2,7 @@
 $movies = [
     [
         "id" => 1,
+        "background" => "/Cine-Colombia/assets/images/imagenes-prueba/6df0494e5a89-warner_furiosa_cinecol_1000x510.jpg",
         "title" => "Furiosa: A Mad Max Saga",
         "subtitle" => "De la Saga De Mad Max",
         "release_date" => "23 May 2024",

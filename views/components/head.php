@@ -18,11 +18,13 @@
             <button id="open-sidebar" class="text-white">
                 <i class="fas fa-bars text-[2rem]"></i>
             </button>
-            <img src="/Cine-Colombia/assets/images/cinecolombia.webp" alt="Cine Colombia" class="h-16">
+            <a href="/Cine-Colombia">
+                <img src="/Cine-Colombia/assets/images/cinecolombia.webp" alt="Cine Colombia" class="h-16">
+            </a>
         </div>
-        <nav class="flex space-x-4">
-            <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cartelera</a>
-            <a href="#" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
+        <nav class="flex space-x-4 md:relative md:left-[12%]">
+            <a href="/Cine-Colombia/movies/" class="nav-button active:bg-red-500 text-white rounded-full px-3 py-1">Cartelera</a>
+            <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
             <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cineco Alternativo</a>
             <a href="#" class="nav-button text-white rounded-full px-3 py-1">Comidas</a>
         </nav>

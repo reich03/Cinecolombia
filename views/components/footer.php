@@ -1,6 +1,8 @@
 <footer class="bg-gray-100  py-8 mt-auto">
     <div class="container mx-auto flex justify-between items-center px-4 py-2">
-        <img src="/Cine-Colombia/assets/images/logo_cineco_blue.svg" alt="Cine Colombia" class="h-8">
+        <a href="/Cine-Colombia">
+            <img src="/Cine-Colombia/assets/images/logo_cineco_blue.svg" alt="Cine Colombia" class="h-8">
+        </a>
         <div class="flex items-center space-x-8">
             <nav class="flex space-x-4 items-center justify-center">
                 <a href="#" class="hover:text-gray-900 text-[12px] pr-2 border-r border-r-[#4f627b]">Información Legal</a>

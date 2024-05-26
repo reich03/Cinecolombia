@@ -22,5 +22,5 @@
             </div>
         </div>
         <div class="px-2 py-4 text-sm bg-[#1C508D] flex items-center justify-center rounded-b-md">
-            <a href="#" class="text-white text-center hover:underline">¿No estás registrado? Regístrate aquí</a>
+            <a href="/Cine-Colombia/register" class="text-white text-center hover:underline">¿No estás registrado? Regístrate aquí</a>
         </div>

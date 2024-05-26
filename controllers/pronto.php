@@ -1,25 +1,25 @@
 <?php
 
-class Movies extends Controller
+class Pronto extends Controller
 {
     function __construct()
     {
         parent::__construct();
-        error_log('movies-constructor::construct->Inicializa');
-        $this->view->message = "Movies Controller";
+        error_log('pronto-constructor::construct->Inicializa');
+        $this->view->message = "pronto Controller";
     }
 
     function render()
     {   
-        error_log('movies-controller::construct->Controlador de render');
+        error_log('pronto-controller::construct->Controlador de render');
         require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
         $this->view->movies = $movies;  
-        $this->view->render('movies/index');
+        $this->view->render('pronto/index');
     }
 
     function view($params)
     {
-        error_log('movies-view::construct->Movie vista');
+        error_log('movies-view::construct->pronto vista');
         $movieId = $params[0];
         require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
 
@@ -30,6 +30,6 @@ class Movies extends Controller
             }
         }
 
-        $this->view->render('movies/view');
+        $this->view->render('pronto/view');
     }
 }
