@@ -216,3 +216,11 @@ div.container-dashboard {
     border-bottom-left-radius: 2rem;
     border-bottom-right-radius: 2rem;
 }
+
+a.buscador-elementblock:hover i,a.buscador-elementblock:hover h3,a.buscador-elementblock:hover p{
+color: white;
+}
+
+a.buscador-elementblock{
+    margin-bottom: 5px;
+}

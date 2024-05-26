@@ -1,5 +1,5 @@
 <?php
-require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Cine-Colombia/assets/DataPrueba/Movies.php';
 ?>
 <div class="container mx-auto mt-8">
     <h2 class="text-[20px] font-semibold pb-8 pt-6">EN CARTELERA</h2>

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="flex flex-col min-h-screen">
@@ -29,17 +29,18 @@
                 </a>
             </div>
             <nav class="flex space-x-4 md:relative md:left-[12%]">
-                <a href="/Cine-Colombia/movies/" class="nav-button active:bg-red-500 text-white rounded-full px-3 py-1">Cartelera</a>
+                <a href="/Cine-Colombia/movies/" class="nav-button text-white rounded-full px-3 py-1">Cartelera</a>
                 <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
                 <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cineco Alternativo</a>
                 <a href="#" class="nav-button text-white rounded-full px-3 py-1">Comidas</a>
             </nav>
             <div class="flex items-center space-x-4">
                 <div class="relative">
-                    <input type="text" placeholder="Buscar" class="bg-gray-800 text-white rounded-full px-4 py-2">
+                    <input type="text" id="searchInput" placeholder="Buscar" class="bg-gray-800 text-white rounded-full px-4 py-2">
                     <button class="absolute right-0 top-0 mt-2 mr-2 text-white">
                         <i class="fas fa-search"></i>
                     </button>
+                    <div id="searchResults" class="absolute mt-12 bg-white text-black rounded-lg shadow-lg z-50 hidden"></div>
                 </div>
                 <span>Villavicencio</span>
                 <div class="relative">
@@ -53,10 +54,47 @@
             </div>
         </div>
     </header>
-
     <?php include 'sidebar.php'; ?>
+    <script>
+        $(document).ready(function() {
+            $('#searchInput').on('input', function() {
+                let query = $(this).val().toLowerCase();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '/Cine-Colombia/assets/DataPrueba/getMovies.php',
+                        method: 'GET',
+                        success: function(data) {
+                            let filteredMovies = data.filter(movie => movie.title.toLowerCase().includes(query));
+                            let resultsHtml = '';
+                            if (filteredMovies.length > 0) {
+                                filteredMovies.forEach(movie => {
+                                    resultsHtml += `
+                                        <a href="/Cine-Colombia/movies/view/${movie.id}" class=" buscador-elementblock px-4 py-2 :bg-white flex items-center space-x-2 hover:bg-[#1C508D] rounded-lg mb-2">
+                                            <i class="fas fa-film text-[#1C508D] "></i>
+                                            <div>
+                                                <h3 class="text-[#1C508D]  font-semibold">${movie.title}</h3>
+                                                <p class="text-[#1C508D]  text-sm">${movie.subtitle}</p>
+                                            </div>
+                                        </a>`;
+                                });
+                            } else {
+                                resultsHtml = '<div class="block px-4 py-2">No se encontraron resultados</div>';
+                            }
+                            $('#searchResults').html(resultsHtml).removeClass('hidden');
+                        }
+                    });
+                } else {
+                    $('#searchResults').addClass('hidden');
+                }
+            });
 
-
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#searchInput, #searchResults').length) {
+                    $('#searchResults').addClass('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

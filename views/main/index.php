@@ -1,5 +1,5 @@
 <?php
-require_once "./views/components/head.php"
+require_once "./views/components/head.php";
 ?>
 <div class="pt-[8rem]">
     <main class="flex-grow mx-auto ">
@@ -29,5 +29,5 @@ require_once "./views/components/head.php"
     </main>
 </div>
 <?php
-require_once "./views/components/footer.php"
+require_once "./views/components/footer.php";
 ?>

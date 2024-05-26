@@ -1,12 +1,11 @@
 <?php
-require_once "./views/components/head.php"
+require_once "./views/components/head.php";
 ?>
 <div class="pt-[12rem]">
     <main class="flex-grow mx-auto container">
-        <h1 class="text-left text-2xl font-bold">EN CARTELERA
-        </h1>
+        <?php require_once "./views/components/movies.php"; ?>
     </main>
 </div>
 <?php
-require_once "./views/components/footer.php"
+require_once "./views/components/footer.php";
 ?>
