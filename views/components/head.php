@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,50 +11,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
 </head>
+
 <body class="flex flex-col min-h-screen">
-<header class="bg-black text-white py-[2rem] fixed w-full top-0 z-50">
-    <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            <button id="open-sidebar" class="text-white">
-                <i class="fas fa-bars text-[2rem]"></i>
-            </button>
-            <a href="/Cine-Colombia">
-                <img src="/Cine-Colombia/assets/images/cinecolombia.webp" alt="Cine Colombia" class="h-16">
-            </a>
-        </div>
-        <nav class="flex space-x-4 md:relative md:left-[12%]">
-            <a href="/Cine-Colombia/movies/" class="nav-button active:bg-red-500 text-white rounded-full px-3 py-1">Cartelera</a>
-            <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
-            <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cineco Alternativo</a>
-            <a href="#" class="nav-button text-white rounded-full px-3 py-1">Comidas</a>
-        </nav>
-        <div class="flex items-center space-x-4">
-            <div class="relative">
-                <input type="text" placeholder="Buscar" class="bg-gray-800 text-white rounded-full px-4 py-2">
-                <button class="absolute right-0 top-0 mt-2 mr-2 text-white">
-                    <i class="fas fa-search"></i>
+    <header class="bg-black text-white py-[2rem] fixed w-full top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <button id="open-sidebar" class="text-white">
+                    <i class="fas fa-bars text-[2rem]"></i>
                 </button>
+                <a href="/Cine-Colombia">
+                    <img src="/Cine-Colombia/assets/images/cinecolombia.webp" alt="Cine Colombia" class="h-16">
+                </a>
             </div>
-            <span>Villavicencio</span>
-            <div class="relative">
-                <button id="user-menu" class="relative text-white focus:outline-none">
-                    <i class="fas fa-user"></i>
-                </button>
-                <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-[20rem] bg-white text-black rounded-lg shadow-lg z-50 !top-[2rem] !right-[-18px]">
-                    <?php include 'user-modal.php'; ?>
+            <nav class="flex space-x-4 md:relative md:left-[12%]">
+                <a href="/Cine-Colombia/movies/" class="nav-button active:bg-red-500 text-white rounded-full px-3 py-1">Cartelera</a>
+                <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
+                <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cineco Alternativo</a>
+                <a href="#" class="nav-button text-white rounded-full px-3 py-1">Comidas</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" placeholder="Buscar" class="bg-gray-800 text-white rounded-full px-4 py-2">
+                    <button class="absolute right-0 top-0 mt-2 mr-2 text-white">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <span>Villavicencio</span>
+                <div class="relative">
+                    <button id="user-menu" class="relative text-white focus:outline-none">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-[20rem] bg-white text-black rounded-lg shadow-lg z-50 !top-[2rem] !right-[-18px]">
+                        <?php include 'user-modal.php'; ?>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<?php include 'sidebar.php'; ?>
+    <?php include 'sidebar.php'; ?>
 
 
 </body>
+
 </html>
-
-
-
-
