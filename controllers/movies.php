@@ -1,9 +1,11 @@
 <?php
+
 class Movies extends Controller
 {
     function __construct()
     {
         parent::__construct();
+        $this->loadModel('movies');
         error_log('movies-constructor::construct->Inicializa');
         $this->view->message = "Movies Controller";
     }
@@ -11,7 +13,7 @@ class Movies extends Controller
     function render()
     {
         error_log('movies-controller::construct->Controlador de render');
-        require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
+        $movies = $this->model->getAllMovies();
         $this->view->movies = $movies;
         $this->view->render('movies/index');
     }
@@ -20,21 +22,16 @@ class Movies extends Controller
     {
         error_log('movies-view::construct->Movie vista');
         $movieId = $params[0];
-        require_once '../Cine-Colombia/assets/DataPrueba/Movies.php';
-        require_once '../Cine-Colombia/assets/DataPrueba/funciones.php';
+        $movie = $this->model->getMovieById($movieId);
 
-        foreach ($movies as $movie) {
-            if ($movie['id'] == $movieId) {
-                $this->view->movie = $movie;
-                break;
-            }
+        if ($movie) {
+            $this->view->movie = $movie;
+            $this->view->render('movies/view');
+        } else {
+            error_log('movies-view::construct->Movie no encontrada');
+            $this->view->message = "Película no encontrada";
+            $this->view->render('movies/error');
         }
-
-        $this->view->funciones = array_filter($funciones, function ($funcion) use ($movieId) {
-            return $funcion['idpeliculas'] == $movieId;
-        });
-
-        $this->view->render('movies/view');
     }
 
     function selectSeats($params)

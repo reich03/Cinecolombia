@@ -1,17 +1,18 @@
 <?php
-include_once 'core/imodel.php';
+// require_once 'core/imodel.php';  
 class Model
 {
-    function __construct()
+    protected $db;
+
+    public function __construct()
     {
-        $this->db = new Database();
+        $this->db = new Database(); 
     }
 
     function query($query)
     {
         return $this->db->connect()->query($query);
     }
-
 
     function prepare($query)
     {

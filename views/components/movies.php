@@ -1,22 +1,19 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Cine-Colombia/assets/DataPrueba/Movies.php';
-?>
 <div class="container mx-auto mt-8">
     <h2 class="text-[20px] font-semibold pb-8 pt-6">EN CARTELERA</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <?php foreach ($movies as $movie) : ?>
+        <?php foreach ($this->movies as $movie) : ?>
             <div class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer">
-                <a href="/Cine-Colombia/movies/view/<?= $movie['id'] ?>">
-                    <img src="<?= $movie['img'] ?>" alt="<?= $movie['title'] ?>" class="w-full h-[30rem] object-cover md:object-fill">
+                <a href="/Cine-Colombia/movies/view/<?= $movie['idpeliculas'] ?>">
+                    <img src="<?= $movie['background'] ?>" alt="<?= $movie['titulo'] ?>" class="w-full h-[30rem] object-cover md:object-fill">
                 </a>
                 <div class="p-4">
-                    <h3 class="text-lg font-bold"><a href="/Cine-Colombia/movies/view/<?= $movie['id'] ?>"><?= $movie['title'] ?></a></h3>
-                    <p class="text-gray-600"><?= $movie['subtitle'] ?></p>
-                    <p class="text-gray-600">Estreno: <?= $movie['release_date'] ?></p>
-                    <p class="text-gray-600">Género: <?= $movie['genre'] ?></p>
+                    <h3 class="text-lg font-bold"><a href="/Cine-Colombia/movies/view/<?= $movie['idpeliculas'] ?>"><?= $movie['titulo'] ?></a></h3>
+                    <p class="text-gray-600"><?= $movie['subtitulo'] ?></p>
+                    <p class="text-gray-600">Estreno: <?= $movie['fecha_estreno'] ?></p>
+                    <p class="text-gray-600">Género: <?= $movie['genero'] ?></p>
                     <div class="flex items-center mt-[1rem] gap-2">
-                        <span class="inline-block bg-red-500 text-white text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $movie['rating'] ?></span>
-                        <span class="inline-block bg-gray-300 text-black text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $movie['duration'] ?></span>
+                        <span class="inline-block bg-red-500 text-white text-xs rounded-xs py-[.3125rem] px-[.625rem]">Disponible desde  <?= $movie['clasificacion'] ?></span>
+                        <span class="inline-block bg-gray-300 text-black text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $movie['duracion'] ?> min</span>
                     </div>
                 </div>
             </div>

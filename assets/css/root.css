@@ -217,7 +217,7 @@ div.container-dashboard {
     border-bottom-right-radius: 2rem;
 }
 
-a.buscador-elementblock:hover i,a.buscador-elementblock:hover h3,a.buscador-elementblock:hover p{
+a.buscador-element.block:hover i,a.buscador-element.block:hover div h3,a.buscador-element.block:hover div p{
 color: white;
 }
 

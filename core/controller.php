@@ -7,16 +7,35 @@ class Controller
         $this->view = new View();
     }
 
-    function loadModel($model)
-    {
+
+    function loadModel($model) {
+        if (!is_string($model)) {
+            error_log("Error: loadModel espera un string. Recibido: " . gettype($model));
+            return; 
+        }
+        
         $url = 'models/' . $model . 'model.php';
+        error_log("Error: loadModel el modelo es : " . ($url));
 
         if (file_exists($url)) {
             require_once $url;
-            $modelName = $model . 'Model';
-            $this->model = new $modelName();
+            error_log("Error: loadModel info de la url: " .($url));
+            $modelName = ucfirst($model) . 'Model';  
+            error_log("Error: loadModel espera un string. Recibido: " .($modelName));
+            if (class_exists($modelName)) {
+                $this->model = new $modelName();
+                error_log("Error: loadModel es xd: " .($modelName) ."xdd"  .($model));
+
+            } else {
+                error_log("model::loadModel->Error: Clase $modelName no encontrada");
+            }
+        } else {
+            error_log("model::loadModel->Error: No se encontró el modelo $url");
         }
     }
+    
+    
+
 
     function existPost($params)
     {

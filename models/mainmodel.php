@@ -1,6 +1,6 @@
 <?php 
 
-class MainMOdel extends Model{
+class MainModel extends Model{
 
     function __construct ()
     {

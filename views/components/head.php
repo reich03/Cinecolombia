@@ -49,7 +49,7 @@
                         <i class="fas fa-user"></i>
                     </button>
                     <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-[20rem] bg-white text-black rounded-lg shadow-lg z-50 !top-[2rem] !right-[-18px]">
-                        <?php 
+                        <?php
                         session_start();
                         if (isset($_SESSION['user'])) {
                             include 'user-connected.php';
@@ -69,21 +69,22 @@
                 let query = $(this).val().toLowerCase();
                 if (query.length > 0) {
                     $.ajax({
-                        url: '/Cine-Colombia/assets/DataPrueba/getMovies.php',
+                        url: '/Cine-Colombia/getmovies/getAllMovies', 
                         method: 'GET',
+                        dataType: 'json',
                         success: function(data) {
-                            let filteredMovies = data.filter(movie => movie.title.toLowerCase().includes(query));
+                            let filteredMovies = data.filter(movie => movie.titulo.toLowerCase().includes(query));
                             let resultsHtml = '';
                             if (filteredMovies.length > 0) {
                                 filteredMovies.forEach(movie => {
                                     resultsHtml += `
-                                        <a href="/Cine-Colombia/movies/view/${movie.id}" class=" buscador-elementblock px-4 py-2 :bg-white flex items-center space-x-2 hover:bg-[#1C508D] rounded-lg mb-2">
-                                            <i class="fas fa-film text-[#1C508D] "></i>
-                                            <div>
-                                                <h3 class="text-[#1C508D]  font-semibold">${movie.title}</h3>
-                                                <p class="text-[#1C508D]  text-sm">${movie.subtitle}</p>
-                                            </div>
-                                        </a>`;
+                                <a href="/Cine-Colombia/movies/view/${movie.idpeliculas}" class="buscador-element block px-4 py-2 bg-white flex items-center space-x-2 hover:bg-[#1C508D] rounded-lg mb-2">
+                                    <i class="fas fa-film text-[#1C508D] "></i>
+                                    <div>
+                                        <h3 class="text-[#1C508D] font-semibold">${movie.titulo}</h3>
+                                        <p class="text-[#1C508D] text-sm">${movie.subtitulo}</p>
+                                    </div>
+                                </a>`;
                                 });
                             } else {
                                 resultsHtml = '<div class="block px-4 py-2">No se encontraron resultados</div>';

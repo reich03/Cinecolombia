@@ -11,13 +11,13 @@ require_once "./views/components/head.php";
                 </div>
                 <div class="md:w-2/3 md:ml-6 mt-4 md:mt-0">
                     <div class="flex flex-wrap space-x-4 items-start flex-col top-[64%] relative">
-                        <h3 class="text-3xl font-bold text-[#1c508d] pl-[1rem]"><?= $this->movie['title'] ?></h3>
-                        <p class="text-lg text-gray-600 mb-4"><?= $this->movie['subtitle'] ?></p>
-                        <p class="text-gray-700 mb-2"><strong>Estreno:</strong> <?= $this->movie['release_date'] ?></p>
-                        <p class="text-gray-700 mb-2"><strong>Género:</strong> <?= $this->movie['genre'] ?></p>
+                        <h3 class="text-3xl font-bold text-[#1c508d] pl-[1rem]"><?= $this->movie['titulo'] ?></h3>
+                        <p class="text-lg text-gray-600 mb-4"><?= $this->movie['subtitulo'] ?></p>
+                        <p class="text-gray-700 mb-2"><strong>Estreno:</strong> <?= $this->movie['fecha_estreno'] ?></p>
+                        <p class="text-gray-700 mb-2"><strong>Género:</strong> <?= $this->movie['genero'] ?></p>
                         <div class="flex items-center mt-[1rem] gap-2 mb-4">
-                            <span class="inline-block bg-red-500 text-white text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $this->movie['rating'] ?></span>
-                            <span class="inline-block bg-gray-300 text-black text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $this->movie['duration'] ?></span>
+                            <span class="inline-block bg-red-500 text-white text-xs rounded-xs py-[.3125rem] px-[.625rem]">Disponible desde <?= $this->movie['clasificacion'] ?></span>
+                            <span class="inline-block bg-gray-300 text-black text-xs rounded-xs py-[.3125rem] px-[.625rem]"><?= $this->movie['duracion'] ?> min</span>
                         </div>
                     </div>
                 </div>
@@ -29,9 +29,9 @@ require_once "./views/components/head.php";
 <div class="mx-auto container px-6 py-3 pt-[5.75rem]">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="col-span-1 md:col-span-1">
-            <p class="text-gray-600 mb-6"><?= $this->movie['description'] ?></p>
+            <p class="text-gray-600 mb-6"><?= $this->movie['sinopsis'] ?></p>
             <h3 class="text-xl font-bold text-[#1c508d]">Titulo Original</h3>
-            <h3 class="text-md font-semiBold text-black mb-2"><?= $this->movie['title'] ?></h3>
+            <h3 class="text-md font-semiBold text-black mb-2"><?= $this->movie['titulo'] ?></h3>
             <p class="text-[#1c508d] text-[16px] font-Bold mb-2">Director:</p>
             <p class="text-gray-700 mb-2">Jesus Reyes</p>
             <p class="text-[#1c508d] text-[16px] font-Bold mb-2">Actores:</p>
