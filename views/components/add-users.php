@@ -12,17 +12,29 @@
                 <form id="userForm">
                     <div class="mb-4">
                         <label for="userName" class="block text-sm text-gray-600">Nombre <span class="text-red-700">*</span></label>
-                        <input type="text" id="userName" name="userName" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                        <input type="text" id="userName" name="first_name" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                    </div>
+                    <div class="mb-4">
+                        <label for="userLastName" class="block text-sm text-gray-600">Apellido <span class="text-red-700">*</span></label>
+                        <input type="text" id="userLastName" name="last_name" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
                     </div>
                     <div class="mb-4">
                         <label for="userEmail" class="block text-sm text-gray-600">Correo <span class="text-red-700">*</span></label>
-                        <input type="email" id="userEmail" name="userEmail" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                        <input type="email" id="userEmail" name="email" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                    </div>
+                    <div class="mb-4">
+                        <label for="userPhone" class="block text-sm text-gray-600">Teléfono</label>
+                        <input type="text" id="userPhone" name="phone" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                    </div>
+                    <div class="mb-4">
+                        <label for="userPassword" class="block text-sm text-gray-600">Contraseña <span class="text-red-700">*</span></label>
+                        <input type="password" id="userPassword" name="password" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
                     </div>
                     <div class="mb-4">
                         <label for="userRole" class="block text-sm text-gray-600">Rol <span class="text-red-700">*</span></label>
-                        <select id="userRole" name="userRole" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
+                        <select id="userRole" name="role" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                            <option value="1">Cliente</option>
+                            <option value="2">Trabajador</option>
                         </select>
                     </div>
                     <input type="hidden" id="userId" name="userId">

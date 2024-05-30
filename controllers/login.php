@@ -18,6 +18,7 @@ class Login extends Controller
         if ($user) {
             session_start();
             $_SESSION['user'] = $user;
+            $redirectUrl = ($user['user_type'] == 'empleado') ? constant('URL') . '/' . 'dashboard' : constant('URL');
             echo '<script>
                 Swal.fire({
                     icon: "success",
@@ -25,7 +26,7 @@ class Login extends Controller
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    window.location.href = "' . constant('URL') . '";
+                    window.location.href = "' . $redirectUrl . '";
                 });
             </script>';
         } else {

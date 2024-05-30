@@ -1,5 +1,5 @@
-<?php 
-require_once __DIR__ . '/../core/model.php';  
+<?php
+require_once __DIR__ . '/../core/model.php';
 
 class MoviesModel extends Model
 {
@@ -11,7 +11,29 @@ class MoviesModel extends Model
     public function getAllMovies()
     {
         try {
-            $query = $this->db->connect()->query('SELECT * FROM peliculas');
+            $query = $this->db->connect()->query('
+            SELECT 
+                p.*, 
+                COALESCE(json_agg(
+                    json_build_object(
+                        \'idactor\', a.idactor, 
+                        \'nombre\', a.nombre, 
+                        \'apellido\', a.apellido, 
+                        \'personaje\', c.personaje
+                    )
+                ) FILTER (WHERE a.idactor IS NOT NULL), \'[]\') as actores,
+                json_build_object(
+                    \'iddirector\', d.iddirector, 
+                    \'nombre\', d.nombre, 
+                    \'apellido\', d.apellido
+                ) as director
+            FROM peliculas p
+            LEFT JOIN casting c ON p.idpeliculas = c.idpeliculas
+            LEFT JOIN actores a ON c.idactor = a.idactor
+            LEFT JOIN directores d ON p.iddirector = d.iddirector
+            GROUP BY p.idpeliculas, d.iddirector
+        ');
+
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log('MoviesModel::getAllMovies->PDOException ' . $e);
@@ -19,10 +41,34 @@ class MoviesModel extends Model
         }
     }
 
+
     public function getMovieById($id)
     {
         try {
-            $query = $this->db->connect()->prepare('SELECT * FROM peliculas WHERE idpeliculas = :id');
+            $query = $this->db->connect()->prepare('
+                SELECT 
+                    p.*, 
+                    json_agg(
+                        json_build_object(
+                            \'idactor\', a.idactor, 
+                            \'nombre\', a.nombre, 
+                            \'apellido\', a.apellido, 
+                            \'personaje\', c.personaje
+                        )
+                    ) as actores,
+                    json_build_object(
+                        \'iddirector\', d.iddirector, 
+                        \'nombre\', d.nombre, 
+                        \'apellido\', d.apellido
+                    ) as director
+                FROM peliculas p
+                LEFT JOIN casting c ON p.idpeliculas = c.idpeliculas
+                LEFT JOIN actores a ON c.idactor = a.idactor
+                LEFT JOIN directores d ON p.iddirector = d.iddirector
+                WHERE p.idpeliculas = :id
+                GROUP BY p.idpeliculas, d.iddirector
+            ');
+
             $query->execute(['id' => $id]);
             return $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -34,16 +80,43 @@ class MoviesModel extends Model
     public function insertMovie($data, $files)
     {
         try {
-            // Handle file uploads
             $imagePath = $this->uploadFile($files['imagen'], 'images');
             $backgroundPath = $this->uploadFile($files['background'], 'backgrounds');
 
-            // Insert movie data
-            $query = $this->db->connect()->prepare('INSERT INTO peliculas (titulo, subtitulo, fecha_estreno, genero, clasificacion, duracion, imagen, background, iddirector) VALUES (:titulo, :subtitulo, :fecha_estreno, :genero, :clasificacion, :duracion, :imagen, :background, :iddirector)');
+            $query = $this->db->connect()->prepare('
+                INSERT INTO peliculas (
+                    titulo, 
+                    subtitulo, 
+                    sinopsis, 
+                    fecha_estreno, 
+                    fecha_retiro, 
+                    genero, 
+                    clasificacion, 
+                    duracion, 
+                    imagen, 
+                    background, 
+                    iddirector
+                ) VALUES (
+                    :titulo, 
+                    :subtitulo, 
+                    :sinopsis, 
+                    :fecha_estreno, 
+                    :fecha_retiro, 
+                    :genero, 
+                    :clasificacion, 
+                    :duracion, 
+                    :imagen, 
+                    :background, 
+                    :iddirector
+                ) RETURNING idpeliculas
+            ');
+
             $query->execute([
                 'titulo' => $data['titulo'],
                 'subtitulo' => $data['subtitulo'],
+                'sinopsis' => $data['sinopsis'],
                 'fecha_estreno' => $data['fecha_estreno'],
+                'fecha_retiro' => $data['fecha_retiro'],
                 'genero' => $data['genero'],
                 'clasificacion' => $data['clasificacion'],
                 'duracion' => $data['duracion'],
@@ -52,35 +125,54 @@ class MoviesModel extends Model
                 'iddirector' => $data['iddirector']
             ]);
 
-            // Get the inserted movie ID
-            $movieId = $this->db->connect()->lastInsertId();
+            $movieId = $query->fetch(PDO::FETCH_ASSOC)['idpeliculas'];
 
-            // Insert actors
-            foreach ($data['actores'] as $actorId) {
-                $query = $this->db->connect()->prepare('INSERT INTO casting (idpeliculas, idactor) VALUES (:idpeliculas, :idactor)');
-                $query->execute(['idpeliculas' => $movieId, 'idactor' => $actorId]);
+            foreach ($data['actores'] as $index => $actorId) {
+                $query = $this->db->connect()->prepare('
+                    INSERT INTO casting (idpeliculas, idactor, personaje) 
+                    VALUES (:idpeliculas, :idactor, :personaje)
+                ');
+                $query->execute([
+                    'idpeliculas' => $movieId,
+                    'idactor' => $actorId,
+                    'personaje' => $data['personaje_name'][$index]
+                ]);
             }
 
             return true;
         } catch (PDOException $e) {
-            error_log('MoviesModel::insertMovie->PDOException ' . $e);
+            error_log('DashboardModel::insertMovie->PDOException ' . $e);
             return false;
         }
     }
-
     public function updateMovie($data, $files)
     {
         try {
-            // Handle file uploads
-            $imagePath = $this->uploadFile($files['imagen'], 'images');
-            $backgroundPath = $this->uploadFile($files['background'], 'backgrounds');
+            $imagePath = isset($files['imagen']) ? $this->uploadFile($files['imagen'], 'images') : $data['imagen'];
+            $backgroundPath = isset($files['background']) ? $this->uploadFile($files['background'], 'backgrounds') : $data['background'];
 
-            // Update movie data
-            $query = $this->db->connect()->prepare('UPDATE peliculas SET titulo = :titulo, subtitulo = :subtitulo, fecha_estreno = :fecha_estreno, genero = :genero, clasificacion = :clasificacion, duracion = :duracion, imagen = :imagen, background = :background, iddirector = :iddirector WHERE idpeliculas = :id');
+            $query = $this->db->connect()->prepare('
+                UPDATE peliculas SET 
+                    titulo = :titulo, 
+                    subtitulo = :subtitulo, 
+                    sinopsis = :sinopsis, 
+                    fecha_estreno = :fecha_estreno, 
+                    fecha_retiro = :fecha_retiro, 
+                    genero = :genero, 
+                    clasificacion = :clasificacion, 
+                    duracion = :duracion, 
+                    imagen = :imagen, 
+                    background = :background, 
+                    iddirector = :iddirector 
+                WHERE idpeliculas = :id
+            ');
+
             $query->execute([
                 'titulo' => $data['titulo'],
                 'subtitulo' => $data['subtitulo'],
+                'sinopsis' => $data['sinopsis'],
                 'fecha_estreno' => $data['fecha_estreno'],
+                'fecha_retiro' => $data['fecha_retiro'],
                 'genero' => $data['genero'],
                 'clasificacion' => $data['clasificacion'],
                 'duracion' => $data['duracion'],
@@ -90,19 +182,21 @@ class MoviesModel extends Model
                 'id' => $data['idpeliculas']
             ]);
 
-            // Delete old actors
             $query = $this->db->connect()->prepare('DELETE FROM casting WHERE idpeliculas = :idpeliculas');
             $query->execute(['idpeliculas' => $data['idpeliculas']]);
 
-            // Insert new actors
-            foreach ($data['actores'] as $actorId) {
-                $query = $this->db->connect()->prepare('INSERT INTO casting (idpeliculas, idactor) VALUES (:idpeliculas, :idactor)');
-                $query->execute(['idpeliculas' => $data['idpeliculas'], 'idactor' => $actorId]);
+            foreach ($data['actores'] as $index => $actorId) {
+                $query = $this->db->connect()->prepare('INSERT INTO casting (idpeliculas, idactor, personaje) VALUES (:idpeliculas, :idactor, :personaje)');
+                $query->execute([
+                    'idpeliculas' => $data['idpeliculas'],
+                    'idactor' => $actorId,
+                    'personaje' => $data['personaje_name'][$index]
+                ]);
             }
 
             return true;
         } catch (PDOException $e) {
-            error_log('MoviesModel::updateMovie->PDOException ' . $e);
+            error_log('DashboardModel::updateMovie->PDOException ' . $e);
             return false;
         }
     }
@@ -110,6 +204,9 @@ class MoviesModel extends Model
     public function deleteMovie($id)
     {
         try {
+            $query = $this->db->connect()->prepare('DELETE FROM casting WHERE idpeliculas = :id');
+            $query->execute(['id' => $id]);
+
             $query = $this->db->connect()->prepare('DELETE FROM peliculas WHERE idpeliculas = :id');
             return $query->execute(['id' => $id]);
         } catch (PDOException $e) {
@@ -118,14 +215,105 @@ class MoviesModel extends Model
         }
     }
 
+
     public function uploadFile($file, $directory)
     {
         if ($file['error'] == UPLOAD_ERR_OK) {
-            $targetDir = __DIR__ . '/../uploads/' . $directory . '/';
+            $targetDir = __DIR__ . '/../../uploads/' . $directory . '/';
+            $this->createDirectoryIfNotExists($targetDir);
             $targetFile = $targetDir . basename($file['name']);
             move_uploaded_file($file['tmp_name'], $targetFile);
-            return $targetFile;
+            return '/uploads/' . $directory . '/' . basename($file['name']);
         }
         return null;
+    }
+
+    private function createDirectoryIfNotExists($directory)
+    {
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+    }
+
+    public function getAllDirectors()
+    {
+        try {
+            $query = $this->db->connect()->query('SELECT * FROM directores');
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getAllDirectors->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function getAllActors()
+    {
+        try {
+            $query = $this->db->connect()->query('SELECT * FROM actores');
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getAllActors->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function createSale($ventaData)
+    {
+        try {
+            $pdo = $this->db->connect();
+            $pdo->beginTransaction();
+
+            $asientoQuery = $pdo->prepare('
+                INSERT INTO asientos (idasiento, estado, claseasiento, idsala) 
+                VALUES (:idasiento, true, :claseasiento, :idsala)
+                ON CONFLICT (idasiento) DO NOTHING
+            ');
+
+            foreach ($ventaData['asientos'] as $asiento) {
+                $asientoQuery->execute([
+                    'idasiento' => $asiento['id'],
+                    'claseasiento' => $asiento['clase'],
+                    'idsala' => $ventaData['idsala']
+                ]);
+            }
+
+            $query = $pdo->prepare('
+                INSERT INTO ventas (
+                    fecha_venta, 
+                    idfuncion, 
+                    idcliente, 
+                    idempleado, 
+                    precionentrada, 
+                    idasiento
+                ) VALUES (
+                    NOW(), 
+                    :idfuncion, 
+                    :idcliente, 
+                    :idempleado, 
+                    :precionentrada, 
+                    :idasiento
+                )
+            ');
+
+            foreach ($ventaData['asientos'] as $asiento) {
+                $query->execute([
+                    'idfuncion' => $ventaData['idfuncion'],
+                    'idcliente' => $ventaData['idcliente'],
+                    'idempleado' => $ventaData['idempleado'],
+                    'precionentrada' => $ventaData['precionentrada'],
+                    'idasiento' => $asiento['id']
+                ]);
+
+                $updateQuery = $pdo->prepare('UPDATE asientos SET estado = false WHERE idasiento = :idasiento');
+                $updateQuery->execute(['idasiento' => $asiento['id']]);
+            }
+
+            $pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            error_log('MoviesModel::createSale->PDOException ' . $e);
+            return false;
+        }
     }
 }

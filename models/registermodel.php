@@ -9,19 +9,67 @@ class RegisterModel extends Model
         parent::__construct();
     }
 
-    public function register($email, $password, $first_name, $last_name, $phone)
+    public function getAll()
+    {
+    }
+
+    public function register($email, $password, $first_name, $last_name, $phone, $user, $role)
     {
         try {
-            $query = $this->db->connect()->prepare('INSERT INTO cliente (correo_cli, clave_cli, nomb_cli, ape_cli, telefono, "user", idrol) VALUES (:email, :password, :first_name, :last_name, :phone, :user, :idrol)');
+            if ($role == 1) {
+                $table = 'cliente';
+                $fields = [
+                    'correo' => 'correo_cli',
+                    'clave' => 'clave_cli',
+                    'nombre' => 'nomb_cli',
+                    'apellido' => 'ape_cli',
+                    'telefono' => 'telefono',
+                    'user' => 'user',
+                    'rol' => 'idrol'
+                ];
+            } else {
+                $table = 'empleado';
+                $fields = [
+                    'correo' => 'correo_emple',
+                    'clave' => 'clave_emple',
+                    'nombre' => 'nomb_emple',
+                    'apellido' => 'ape_emple',
+                    'telefono' => 'telefono',
+                    'user' => 'user',
+                    'rol' => 'idrol'
+                ];
+            }
+
+            $query = $this->db->connect()->prepare("
+            INSERT INTO $table (
+                {$fields['correo']}, 
+                {$fields['clave']}, 
+                {$fields['nombre']}, 
+                {$fields['apellido']}, 
+                {$fields['telefono']}, 
+                \"{$fields['user']}\", 
+                {$fields['rol']}
+            ) VALUES (
+                :email, 
+                :password, 
+                :first_name, 
+                :last_name, 
+                :phone, 
+                :user, 
+                :idrol
+            )
+        ");
+
             $query->execute([
                 'email' => $email,
                 'password' => password_hash($password, PASSWORD_DEFAULT),
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'phone' => $phone,
-                'user' => $first_name,
-                'idrol' => 1
+                'user' => $user,
+                'idrol' => $role
             ]);
+
             return true;
         } catch (PDOException $e) {
             error_log('RegisterModel::register->PDOException ' . $e);

@@ -24,6 +24,8 @@ class Register extends Controller
         $first_name = $this->getPost('first_name');
         $last_name = $this->getPost('last_name');
         $phone = $this->getPost('phone');
+        $user = $first_name;  
+        $role = 1; 
 
         if ($email !== $confirm_email) {
             echo '<script>
@@ -51,7 +53,7 @@ class Register extends Controller
             return;
         }
 
-        if ($this->model->register($email, $password, $first_name, $last_name, $phone)) {
+        if ($this->model->register($email, $password, $first_name, $last_name, $phone, $user, $role)) {
             echo '<script>
                 Swal.fire({
                     icon: "success",

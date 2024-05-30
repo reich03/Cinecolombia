@@ -39,7 +39,6 @@ require_once "./views/components/footer.php";
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Chart for Movies
     var ctxMovies = document.getElementById('moviesChart').getContext('2d');
     var moviesChart = new Chart(ctxMovies, {
         type: 'bar',
@@ -62,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Chart for Rooms
     var ctxRooms = document.getElementById('roomsChart').getContext('2d');
     var roomsChart = new Chart(ctxRooms, {
         type: 'pie',
@@ -90,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Chart for Users
     var ctxUsers = document.getElementById('usersChart').getContext('2d');
     var usersChart = new Chart(ctxUsers, {
         type: 'line',
@@ -114,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Chart for Revenue
     var ctxRevenue = document.getElementById('revenueChart').getContext('2d');
     var revenueChart = new Chart(ctxRevenue, {
         type: 'doughnut',

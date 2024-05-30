@@ -1,6 +1,6 @@
 <?php
 require_once "./views/components/head.php";
-require_once "./views/components/add-users.php"; 
+require_once "./views/components/add-users.php";
 ?>
 
 <div class="pt-[8rem] min-h-screen">
@@ -30,21 +30,18 @@ require_once "./views/components/add-users.php";
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    require_once '../Cine-Colombia/assets/DataPrueba/users.php'; 
-                    foreach ($users as $user) {
-                        echo "<tr>
-                            <td>{$user['id']}</td>
-                            <td>{$user['name']}</td>
-                            <td>{$user['email']}</td>
-                            <td>{$user['role']}</td>
+                    <?php foreach ($this->users as $user) : ?>
+                        <tr>
+                            <td><?= $user['id'] ?></td>
+                            <td><?= $user['nombre'] . ' ' . $user['apellido'] ?></td>
+                            <td><?= $user['correo'] ?></td>
+                            <td><?= $user['idrol'] == 1 ? 'Cliente' : 'Empleado' ?></td>
                             <td class='flex items-center justify-center gap-[10px]'>
-                                <button class='bg-yellow-500 text-white px-2 py-1 rounded editUser' data-id='{$user['id']}'>Editar</button>
-                                <button class='bg-red-500 text-white px-2 py-1 rounded deleteUser' data-id='{$user['id']}'>Eliminar</button>
+                                <button class='bg-yellow-500 text-white px-2 py-1 rounded editUser' data-id='<?= $user['id'] ?>' data-role='<?= $user['idrol'] ?>'>Editar</button>
+                                <button class='bg-red-500 text-white px-2 py-1 rounded deleteUser' data-id='<?= $user['id'] ?>' data-role='<?= $user['idrol'] ?>'>Eliminar</button>
                             </td>
-                        </tr>";
-                    }
-                    ?>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -79,12 +76,22 @@ require_once "./views/components/add-users.php";
 
         $('.editUser').on('click', function() {
             var userId = $(this).data('id');
-            $('#modalTitle').text('Editar Usuario');
-            $('#userId').val(userId);
-            $('#userName').val('Nombre de ejemplo'); 
-            $('#userEmail').val('email@ejemplo.com');
-            $('#userRole').val('Admin'); 
-            $('#userModal').removeClass('hidden');
+            var role = $(this).data('role');
+            $.ajax({
+                url: '/Cine-Colombia/dashboard/getUser/' + userId + '/' + role,
+                method: 'GET',
+                success: function(data) {
+                    var user = JSON.parse(data);
+                    $('#modalTitle').text('Editar Usuario');
+                    $('#userId').val(userId);
+                    $('#userRole').val(role);
+                    $('#userName').val(role == 1 ? user.nomb_cli : user.nomb_emple);
+                    $('#userLastName').val(role == 1 ? user.ape_cli : user.ape_emple);
+                    $('#userEmail').val(role == 1 ? user.correo_cli : user.correo_emple);
+                    $('#userPhone').val(user.telefono);
+                    $('#userModal').removeClass('hidden');
+                }
+            });
         });
 
         $('#closeModal').on('click', function() {
@@ -93,15 +100,71 @@ require_once "./views/components/add-users.php";
 
         $('#userForm').on('submit', function(e) {
             e.preventDefault();
-            $('#userModal').addClass('hidden');
-            alert('Usuario guardado');
+            var formData = new FormData(this);
+            $.ajax({
+                url: $('#userId').val() ? '/Cine-Colombia/dashboard/updateUser' : '/Cine-Colombia/dashboard/createUser',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var res = JSON.parse(response);
+                    if (res.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: 'La operación se ha realizado con éxito'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al realizar la operación'
+                        });
+                    }
+                }
+            });
         });
 
         $('.deleteUser').on('click', function() {
             var userId = $(this).data('id');
-            if (confirm('¿Está seguro de eliminar el usuario con ID: ' + userId + '?')) {
-                alert('Funcionalidad para eliminar el usuario con ID: ' + userId);
-            }
+            var role = $(this).data('role');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'No podrás revertir esta acción!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Cine-Colombia/dashboard/deleteUser/' + userId + '/' + role,
+                        method: 'GET',
+                        success: function(response) {
+                            var res = JSON.parse(response);
+                            if (res.status === 'success') {
+                                Swal.fire(
+                                    'Eliminado!',
+                                    'El usuario ha sido eliminado.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Hubo un problema al eliminar el usuario'
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         });
     });
 </script>
@@ -111,26 +174,33 @@ require_once "./views/components/add-users.php";
         border-bottom-left-radius: 2rem;
         border-bottom-right-radius: 2rem;
     }
+
     div#usersTable_filter label {
         display: block !important;
         padding-bottom: 1rem !important;
     }
+
     table.dataTable {
         border-collapse: collapse !important;
     }
+
     table.dataTable thead th {
         background-color: #1C508D;
         color: white;
     }
+
     table.dataTable tbody tr:nth-child(even) {
         background-color: #F5F9FF;
     }
+
     table.dataTable tbody tr:nth-child(odd) {
         background-color: #FFFFFF;
     }
+
     table.dataTable tbody tr:hover {
         background-color: #E8F0FE;
     }
+
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         background-color: #1C508D;
         color: white !important;
@@ -138,18 +208,23 @@ require_once "./views/components/add-users.php";
         margin: 0 0.25rem;
         padding: 0.5rem 1rem;
     }
+
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
         background-color: #003366;
     }
+
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background-color: #003366;
     }
+
     #userModal .bg-blue-600 {
         background-color: #1C508D;
     }
+
     th.left-data {
         border-top-left-radius: 10px;
     }
+
     th.right-data {
         border-top-right-radius: 10px;
     }

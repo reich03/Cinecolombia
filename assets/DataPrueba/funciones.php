@@ -4,7 +4,7 @@ $funciones = [
         "idfuncion" => 1,
         "hora_inicio" => "10:00:00",
         "hora_fin" => "12:30:00",
-        "fecha" => "2024-05-26",
+        "fecha" => "2024-05-09",
         "idpeliculas" => 1,
         "idsala" => 1
     ],

@@ -1,6 +1,6 @@
 
 <div class="container mx-auto mt-[8rem]">
-    <h2 class="text-[20px] font-semibold pb-8 pt-6"> Pronto </h2>
+    <h2 class="text-[20px] font-semibold pb-8 pt-6"> EN CARTELERA </h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <?php foreach ($movies as $movie) : ?>
             <div class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer	">

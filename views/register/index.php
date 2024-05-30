@@ -33,6 +33,8 @@ require_once "./views/components/head.php";
             <div>
                 <label for="phone" class="block text-sm font-medium text-gray-700">Celular <span class="text-red-600">*</span></label>
                 <input type="text" id="phone" name="phone" class="mt-1 w-full px-4 py-2 border rounded-md bg-blue-100" placeholder="Celular" required>
+                <input type="hidden" id="userRole" name="role" value="1">
+
             </div>
             <div>
                 <input type="checkbox" id="terms" name="terms" class="mt-1">
@@ -74,20 +76,20 @@ require_once "./views/components/footer.php";
 ?>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('registrationForm');
-    const registerButton = document.getElementById('registerButton');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registrationForm');
+        const registerButton = document.getElementById('registerButton');
 
-    const inputs = Array.from(form.querySelectorAll('input[required], select[required]'));
+        const inputs = Array.from(form.querySelectorAll('input[required], select[required]'));
 
-    form.addEventListener('input', function () {
-        let allFilled = inputs.every(input => input.value.trim() !== '');
-        registerButton.disabled = !allFilled;
-        registerButton.classList.toggle('bg-white', !allFilled);
-        registerButton.classList.toggle('bg-[#1C508D]', allFilled);
-        registerButton.classList.toggle('!text-white', allFilled);
+        form.addEventListener('input', function() {
+            let allFilled = inputs.every(input => input.value.trim() !== '');
+            registerButton.disabled = !allFilled;
+            registerButton.classList.toggle('bg-white', !allFilled);
+            registerButton.classList.toggle('bg-[#1C508D]', allFilled);
+            registerButton.classList.toggle('!text-white', allFilled);
+        });
     });
-});
 </script>
 
 

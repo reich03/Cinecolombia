@@ -31,7 +31,7 @@
             </div>
             <nav class="flex space-x-4 md:relative md:left-[12%]">
                 <a href="/Cine-Colombia/movies/" class="nav-button text-white rounded-full px-3 py-1">Cartelera</a>
-                <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a>
+                <!-- <a href="/Cine-Colombia/pronto/" class="nav-button text-white rounded-full px-3 py-1">Pronto</a> -->
                 <a href="#" class="nav-button text-white rounded-full px-3 py-1">Cineco Alternativo</a>
                 <a href="#" class="nav-button text-white rounded-full px-3 py-1">Comidas</a>
             </nav>

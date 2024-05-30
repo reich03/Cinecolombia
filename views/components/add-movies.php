@@ -19,6 +19,10 @@
                         <input type="text" id="movieSubtitle" name="subtitulo" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
                     </div>
                     <div class="mb-4">
+                        <label for="moviesinopsis" class="block text-sm text-gray-600">Sinopsis</label>
+                        <input type="text" id="moviesinopsis" name="sinopsis" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
+                    </div>
+                    <div class="mb-4">
                         <label for="movieReleaseDate" class="block text-sm text-gray-600">Fecha de Estreno <span class="text-red-700">*</span></label>
                         <input type="date" id="movieReleaseDate" name="fecha_estreno" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100">
                     </div>
@@ -55,7 +59,10 @@
                         <label for="movieActors" class="block text-sm text-gray-600">Actores</label>
                         <select id="movieActors" name="actores[]" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100" multiple>
                         </select>
+                        <label for="actorCharacters" class="block text-sm text-gray-600">Personajes</label>
+                        <input type="text" id="actorCharacters" name="personaje_name[]" class="w-full px-3 py-2 bg-[#E8F0FE] rounded-[0.65rem] bg-blue-100" multiple>
                     </div>
+
                     <input type="hidden" id="movieId" name="idpeliculas">
                     <div class="flex mt-4">
                         <button type="submit" class="!bg-[#1C508D] text-white w-full px-4 py-2 !rounded-2xl">Guardar</button>

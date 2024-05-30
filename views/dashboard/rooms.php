@@ -1,6 +1,6 @@
 <?php
 require_once "./views/components/head.php";
-require_once "./views/components/add-rooms.php"; // Agregar modal para salas
+require_once "./views/components/add-rooms.php";
 ?>
 
 <div class="pt-[8rem] min-h-screen">
@@ -21,17 +21,16 @@ require_once "./views/components/add-rooms.php"; // Agregar modal para salas
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
-                require_once '../Cine-Colombia/assets/DataPrueba/rooms.php'; 
-                foreach ($rooms as $room) {
+                foreach ($this->rooms as $room) {
                     echo "<div class='bg-white shadow-md rounded-lg overflow-hidden p-4'>
-                        <h3 class='text-lg font-bold mb-2'>{$room['name']}</h3>
-                        <p class='text-gray-600 mb-2'>Capacidad: {$room['capacity']}</p>
+                        <h3 class='text-lg font-bold mb-2'>{$room['nombre_sala']}</h3>
+                        <p class='text-gray-600 mb-2'>Capacidad: {$room['capacidad']}</p>
                         <p class='text-gray-600 mb-2'>Cantidad Preferencial: {$room['cant_prefe']}</p>
                         <p class='text-gray-600 mb-2'>Cantidad General: {$room['cant_gen']}</p>
-                        <p class='text-gray-600 mb-2'>Tipo: {$room['type']}</p>
+                        <p class='text-gray-600 mb-2'>Tipo: {$room['tipo_sala']}</p>
                         <div class='flex items-center justify-center gap-2'>
-                            <button class='bg-yellow-500 text-white px-4 py-2 rounded editRoom' data-id='{$room['id']}'>Editar</button>
-                            <button class='bg-red-500 text-white px-4 py-2 rounded deleteRoom' data-id='{$room['id']}'>Eliminar</button>
+                            <button class='bg-yellow-500 text-white px-4 py-2 rounded editRoom' data-id='{$room['idsala']}'>Editar</button>
+                            <button class='bg-red-500 text-white px-4 py-2 rounded deleteRoom' data-id='{$room['idsala']}'>Eliminar</button>
                         </div>
                     </div>";
                 }
@@ -52,15 +51,20 @@ require_once "./views/components/add-rooms.php"; // Agregar modal para salas
 
         $('.editRoom').on('click', function() {
             var roomId = $(this).data('id');
-            var room = rooms.find(room => room.id == roomId);
-            $('#modalTitle').text('Editar Sala');
-            $('#roomId').val(roomId);
-            $('#roomName').val(room.name);
-            $('#roomCapacity').val(room.capacity);
-            $('#roomCapacity_prefe').val(room.cant_prefe);
-            $('#roomCapacity_gene').val(room.cant_gen);
-            $('#roomType').val(room.type);
-            $('#roomModal').removeClass('hidden');
+            $.ajax({
+                url: '/Cine-Colombia/dashboard/getRoom/' + roomId,
+                method: 'GET',
+                success: function(data) {
+                    var room = JSON.parse(data);
+                    $('#modalTitle').text('Editar Sala');
+                    $('#roomId').val(room.idsala);
+                    $('#roomName').val(room.nombre_sala);
+                    $('#roomCapacity').val(room.capacidad);
+                    $('#roomType').val(room.tipo_sala);
+                    $('#roomPreferential').prop('checked', room.preferencial);
+                    $('#roomModal').removeClass('hidden');
+                }
+            });
         });
 
         $('#closeModal').on('click', function() {
@@ -69,19 +73,71 @@ require_once "./views/components/add-rooms.php"; // Agregar modal para salas
 
         $('#roomForm').on('submit', function(e) {
             e.preventDefault();
-            $('#roomModal').addClass('hidden');
-            alert('Sala guardada');
+            var formData = $(this).serialize();
+            var url = $('#roomId').val() ? '/Cine-Colombia/dashboard/updateRoom' : '/Cine-Colombia/dashboard/createRoom';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    var res = JSON.parse(response);
+                    if (res.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: 'La operación se ha realizado con éxito'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al realizar la operación'
+                        });
+                    }
+                }
+            });
         });
 
         $('.deleteRoom').on('click', function() {
             var roomId = $(this).data('id');
-            if (confirm('¿Está seguro de eliminar la sala con ID: ' + roomId + '?')) {
-                alert('Funcionalidad para eliminar la sala con ID: ' + roomId);
-            }
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'No podrás revertir esta acción!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Cine-Colombia/dashboard/deleteRoom/' + roomId,
+                        method: 'GET',
+                        success: function(response) {
+                            var res = JSON.parse(response);
+                            if (res.status === 'success') {
+                                Swal.fire(
+                                    'Eliminado!',
+                                    'La sala ha sido eliminada.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Hubo un problema al eliminar la sala'
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         });
     });
-
-    var rooms = <?php echo json_encode($rooms); ?>;
 </script>
 
 <style>

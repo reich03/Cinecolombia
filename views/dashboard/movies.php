@@ -56,6 +56,55 @@ require_once "./views/components/add-movies.php";
 
 
 <script>
+    function showSuccessAlert() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'La operación se ha realizado con éxito'
+        });
+    }
+
+    function showErrorAlert() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al realizar la operación'
+        });
+    }
+
+    function showDeleteConfirmation(movieId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'No podrás revertir esta acción!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Cine-Colombia/dashboard/deleteMovie/' + movieId,
+                    method: 'GET',
+                    success: function(response) {
+                        var res = JSON.parse(response);
+                        if (res.status === 'success') {
+                            Swal.fire(
+                                'Eliminado!',
+                                'La película ha sido eliminada.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            showErrorAlert();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     $(document).ready(function() {
         $('#moviesTable').DataTable({
             "language": {
@@ -76,7 +125,7 @@ require_once "./views/components/add-movies.php";
 
         function loadDirectorsAndActors() {
             $.ajax({
-                url: '/Cine-Colombia/directors/getAll',
+                url: '/Cine-Colombia/dashboard/getAllDirectors',
                 method: 'GET',
                 success: function(data) {
                     var directors = JSON.parse(data);
@@ -89,7 +138,7 @@ require_once "./views/components/add-movies.php";
             });
 
             $.ajax({
-                url: '/Cine-Colombia/actors/getAll',
+                url: '/Cine-Colombia/dashboard/getAllActors',
                 method: 'GET',
                 success: function(data) {
                     var actors = JSON.parse(data);
@@ -112,26 +161,34 @@ require_once "./views/components/add-movies.php";
 
         $('.editMovie').on('click', function() {
             var movieId = $(this).data('id');
+            loadDirectorsAndActors();
             $.ajax({
                 url: '/Cine-Colombia/dashboard/getMovie/' + movieId,
                 method: 'GET',
                 success: function(data) {
                     var movie = JSON.parse(data);
+
+                    if (typeof movie.actores === 'string') {
+                        movie.actores = JSON.parse(movie.actores);
+                    }
+
                     $('#modalTitle').text('Editar Película');
                     $('#movieId').val(movie.idpeliculas);
                     $('#movieTitle').val(movie.titulo);
                     $('#movieSubtitle').val(movie.subtitulo);
                     $('#movieReleaseDate').val(movie.fecha_estreno);
+                    $('#movieReleaseDateEnd').val(movie.fecha_retiro);
                     $('#movieGenre').val(movie.genero);
                     $('#movieRating').val(movie.clasificacion);
                     $('#movieDuration').val(movie.duracion);
                     $('#movieDirector').val(movie.iddirector);
                     $('#movieActors').val(movie.actores.map(actor => actor.idactor));
+                    $('#actorCharacters').val(movie.actores.map(actor => actor.personaje));
                     $('#movieModal').removeClass('hidden');
-                    loadDirectorsAndActors();
                 }
             });
         });
+
 
         $('#closeModal').on('click', function() {
             $('#movieModal').addClass('hidden');
@@ -140,6 +197,8 @@ require_once "./views/components/add-movies.php";
         $('#movieForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            console.log('Actores:', formData.getAll('actores[]'));
+            console.log('Personajes:', formData.getAll('personaje_name[]'));
             $.ajax({
                 url: $('#movieId').val() ? '/Cine-Colombia/dashboard/updateMovie' : '/Cine-Colombia/dashboard/createMovie',
                 method: 'POST',
@@ -149,10 +208,9 @@ require_once "./views/components/add-movies.php";
                 success: function(response) {
                     var res = JSON.parse(response);
                     if (res.status === 'success') {
-                        alert('Película guardada');
-                        location.reload();
+                        showSuccessAlert();
                     } else {
-                        alert('Error al guardar la película');
+                        showErrorAlert();
                     }
                 }
             });
@@ -160,24 +218,11 @@ require_once "./views/components/add-movies.php";
 
         $('.deleteMovie').on('click', function() {
             var movieId = $(this).data('id');
-            if (confirm('¿Está seguro de eliminar la película con ID: ' + movieId + '?')) {
-                $.ajax({
-                    url: '/Cine-Colombia/dashboard/deleteMovie/' + movieId,
-                    method: 'GET',
-                    success: function(response) {
-                        var res = JSON.parse(response);
-                        if (res.status === 'success') {
-                            alert('Película eliminada');
-                            location.reload();
-                        } else {
-                            alert('Error al eliminar la película');
-                        }
-                    }
-                });
-            }
+            showDeleteConfirmation(movieId);
         });
     });
 </script>
+
 
 <style>
     div.container-table {

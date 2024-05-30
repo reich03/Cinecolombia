@@ -1,5 +1,7 @@
 <?php
 
+require_once 'core/email_helper.php'; 
+
 class Movies extends Controller
 {
     function __construct()
@@ -56,5 +58,56 @@ class Movies extends Controller
 
         $this->view->render('movies/selectSeats');
     }
+
+    function createSale() {
+        session_start();
+    
+        if (!isset($_SESSION['user'])) {
+            echo json_encode(['error' => 'Debe iniciar sesión para realizar una compra.']);
+            return;
+        }
+    
+        $user = $_SESSION['user'];
+        if (!isset($user['id'])) {
+            echo json_encode(['error' => 'Información del cliente no encontrada.']);
+            return;
+        }
+    
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        $asientos = array_map(function($asiento) {
+            return [
+                'id' => $asiento['id'],
+                'clase' => $asiento['clase']
+            ];
+        }, $data['asientos']);
+    
+        $ventaData = [
+            'idfuncion' => $data['idfuncion'],
+            'idcliente' => $user['id'],
+            'idempleado' => 2,
+            'precionentrada' => $data['precionentrada'],
+            'asientos' => $asientos,
+            'idsala' => $data['idsala']
+        ];
+    
+        if ($this->model->createSale($ventaData)) {
+            $resumenDetalles = "
+                <h4>Resumen de Compra</h4>
+                <p><strong>Usuario:</strong> {$user['nombre']} {$user['apellido']}</p>
+                <p><strong>Correo:</strong> {$user['correo']}</p>
+                <p><strong>Película:</strong> {$this->view->movie['titulo']}</p>
+                <p><strong>Fecha:</strong> {$data['fecha']}</p>
+                <p><strong>Hora:</strong> {$data['hora']}</p>
+                <p><strong>Sala:</strong> {$data['sala']}</p>
+                <p><strong>Asientos:</strong> " . implode(', ', array_column($asientos, 'id')) . "</p>
+                <p><strong>Total:</strong> {$data['precionentrada']}</p>
+            ";
+
+            enviarCorreo($user, $resumenDetalles);
+            echo json_encode(['success' => 'Compra realizada con éxito. Se ha enviado un correo con el resumen.']);
+        } else {
+            echo json_encode(['error' => 'Error al realizar la compra.']);
+        }
+    }
 }
-?>

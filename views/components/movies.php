@@ -4,7 +4,7 @@
         <?php foreach ($this->movies as $movie) : ?>
             <div class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer">
                 <a href="/Cine-Colombia/movies/view/<?= $movie['idpeliculas'] ?>">
-                    <img src="<?= $movie['background'] ?>" alt="<?= $movie['titulo'] ?>" class="w-full h-[30rem] object-cover md:object-fill">
+                    <img src="<?= $movie['imagen'] ?>" alt="<?= $movie['titulo'] ?>" class="w-full h-[30rem] object-cover md:object-fill">
                 </a>
                 <div class="p-4">
                     <h3 class="text-lg font-bold"><a href="/Cine-Colombia/movies/view/<?= $movie['idpeliculas'] ?>"><?= $movie['titulo'] ?></a></h3>
