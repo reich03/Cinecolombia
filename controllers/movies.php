@@ -1,6 +1,6 @@
 <?php
 
-require_once 'core/email_helper.php'; 
+require_once 'core/email_helper.php';
 
 class Movies extends Controller
 {
@@ -59,29 +59,30 @@ class Movies extends Controller
         $this->view->render('movies/selectSeats');
     }
 
-    function createSale() {
+    function createSale()
+    {
         session_start();
-    
+
         if (!isset($_SESSION['user'])) {
             echo json_encode(['error' => 'Debe iniciar sesión para realizar una compra.']);
             return;
         }
-    
+
         $user = $_SESSION['user'];
         if (!isset($user['id'])) {
             echo json_encode(['error' => 'Información del cliente no encontrada.']);
             return;
         }
-    
+
         $data = json_decode(file_get_contents('php://input'), true);
-    
-        $asientos = array_map(function($asiento) {
+
+        $asientos = array_map(function ($asiento) {
             return [
                 'id' => $asiento['id'],
                 'clase' => $asiento['clase']
             ];
         }, $data['asientos']);
-    
+
         $ventaData = [
             'idfuncion' => $data['idfuncion'],
             'idcliente' => $user['id'],
@@ -90,18 +91,23 @@ class Movies extends Controller
             'asientos' => $asientos,
             'idsala' => $data['idsala']
         ];
-    
+
         if ($this->model->createSale($ventaData)) {
             $resumenDetalles = "
-                <h4>Resumen de Compra</h4>
-                <p><strong>Usuario:</strong> {$user['nombre']} {$user['apellido']}</p>
-                <p><strong>Correo:</strong> {$user['correo']}</p>
-                <p><strong>Película:</strong> {$this->view->movie['titulo']}</p>
-                <p><strong>Fecha:</strong> {$data['fecha']}</p>
-                <p><strong>Hora:</strong> {$data['hora']}</p>
-                <p><strong>Sala:</strong> {$data['sala']}</p>
-                <p><strong>Asientos:</strong> " . implode(', ', array_column($asientos, 'id')) . "</p>
-                <p><strong>Total:</strong> {$data['precionentrada']}</p>
+                <div style='background-color: #f4f4f4; padding: 20px; font-family: Arial, sans-serif;'>
+                    <div style='background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+                        <h2 style='color: #1c508d; text-align: center;'>Cine Colombia</h2>
+                        <h4 style='color: #333333; text-align: center;'>Resumen de Compra</h4>
+                        <p style='color: #555555;'><strong>Usuario:</strong> {$user['nombre']} {$user['apellido']}</p>
+                        <p style='color: #555555;'><strong>Correo:</strong> {$user['correo']}</p>
+                        <p style='color: #555555;'><strong>Película:</strong> {$data['titulo']}</p>
+                        <p style='color: #555555;'><strong>Fecha:</strong> {$data['fecha']}</p>
+                        <p style='color: #555555;'><strong>Hora:</strong> {$data['hora']}</p>
+                        <p style='color: #555555;'><strong>Sala:</strong> {$data['sala']}</p>
+                        <p style='color: #555555;'><strong>Asientos:</strong> " . implode(', ', array_column($asientos, 'id')) . "</p>
+                        <p style='color: #555555;'><strong>Total:</strong> {$data['precionentrada']}</p>
+                    </div>
+                </div>
             ";
 
             enviarCorreo($user, $resumenDetalles);
@@ -109,5 +115,14 @@ class Movies extends Controller
         } else {
             echo json_encode(['error' => 'Error al realizar la compra.']);
         }
+    }
+    function getSalesByUser()
+    {
+        session_start();
+        $userId = $_SESSION['user']['id'];
+
+        $purchases = $this->model->getSalesByUser($userId);
+
+        echo json_encode($purchases);
     }
 }

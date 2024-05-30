@@ -11,21 +11,20 @@ function enviarCorreo($user, $resumenDetalles)
 
     try {
         $mail->isSMTP();
-        $mail->Host = 'smtp.example.com'; 
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'your_email@example.com'; 
-        $mail->Password = 'your_password'; 
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->Username = 'redjhojan0319@gmail.com';
+        $mail->Password = 'ieogoqiyjlxvklrn';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
 
-        // Destinatarios
-        $mail->setFrom('your_email@example.com', 'Cine Colombia');
+        $mail->setFrom('redjhojan0319@gmail.com', 'JhojanGrisales');
         $mail->addAddress($user['correo'], $user['nombre'] . ' ' . $user['apellido']);
 
-        // Contenido del correo
         $mail->isHTML(true);
         $mail->Subject = 'Resumen de Compra';
         $mail->Body = $resumenDetalles;
+        $mail->AltBody = strip_tags($resumenDetalles);
 
         $mail->send();
         return true;

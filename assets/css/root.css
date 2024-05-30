@@ -191,13 +191,13 @@ div.swiper-button-prev.swiper-button-prev-products.swiper-button-lock {
 
 
 
-#user-dropdown button {
+/* #user-dropdown button {
     background-color: #2563eb;
-}
+} */
 
-#user-dropdown button:hover {
+/*#user-dropdown button:hover {
     background-color: #1d4ed8;
-}
+} */
 
 input.login:hover{
     border-color: rgb(125 176 229 / 50%);

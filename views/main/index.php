@@ -16,9 +16,9 @@ require_once "./views/components/head.php";
             </div>
         </article>
 
-        <!-- <div class="pb-4">
-            <?php require_once "./views/components/movies.php"; ?>
-        </div> -->
+        <div class="pb-4">
+            <?php require_once "./views/components/movies-preview.php"; ?>
+        </div>
         <div class="pb-4">
             <?php require_once "./views/components/pronto.php"; ?>
         </div>

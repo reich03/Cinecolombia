@@ -326,7 +326,7 @@ require_once "./views/components/footer.php";
             if (cantidadPreferencial > 0 || cantidadGeneral > 0) {
                 seleccionContainer.classList.add('hidden');
                 asientosContainer.classList.remove('hidden');
-                generarMapaDeAsientos(roomData, ocupiedSeats); // Utilizamos ocupiedSeats aquí
+                generarMapaDeAsientos(roomData, ocupiedSeats);
             } else {
                 alert("Seleccione al menos un asiento.");
             }
@@ -348,7 +348,11 @@ require_once "./views/components/footer.php";
                     id: asiento,
                     clase: preferencial ? 'preferencial' : 'general'
                 })),
-                idsala: roomData.idsala
+                idsala: roomData.idsala,
+                fecha: funcionSeleccionada.fecha,
+                hora: funcionSeleccionada.hora,
+                sala: funcionSeleccionada.sala,
+                titulo: <?= json_encode($this->movie['titulo']) ?>
             };
 
             fetch('/Cine-Colombia/movies/createSale', {
@@ -369,6 +373,7 @@ require_once "./views/components/footer.php";
                 })
                 .catch(error => console.error('Error:', error));
         });
+
 
 
         function resetSeleccion() {
@@ -463,37 +468,54 @@ require_once "./views/components/footer.php";
             <p class="text-gray-700 mb-2"><strong>Hora:</strong> ${funcionSeleccionada.hora}</p>
             <p class="text-gray-700 mb-2"><strong>Sala:</strong> ${funcionSeleccionada.sala}</p>
             <p class="text-gray-700 mb-2"><strong>Asientos:</strong> ${asientosSeleccionados.join(', ')}</p>
-            <p class="text-gray-700 mb-2"><strong>Total:</strong> $${totalSpan.textContent}</p>
+            <p class="text-gray-700 mb-2"><strong>Precio:</strong> $${totalSpan.textContent}</p>
         `;
         }
 
         function imprimirResumen() {
             const printWindow = window.open('', '', 'width=800,height=600');
             printWindow.document.write(`
-            <html>
-            <head>
-                <title>Resumen de Compra</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        padding: 20px;
-                    }
-                    h4 {
-                        color: #1c508d;
-                    }
-                    p {
-                        margin: 5px 0;
-                    }
-                </style>
-            </head>
-            <body>
+        <html>
+        <head>
+            <title>Resumen de Compra</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                    background-color: #f4f4f4;
+                }
+                .container {
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+                h2 {
+                    color: #1c508d;
+                    text-align: center;
+                }
+                h4 {
+                    color: #333333;
+                    text-align: center;
+                }
+                p {
+                    color: #555555;
+                    margin: 5px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>Cine Colombia</h2>
                 <h4>Resumen de Compra</h4>
                 ${resumenDetalles.innerHTML}
-            </body>
-            </html>
-        `);
+            </div>
+        </body>
+        </html>
+    `);
             printWindow.document.close();
             printWindow.print();
         }
+
     });
 </script>

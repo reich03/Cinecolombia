@@ -41,6 +41,150 @@ class MoviesModel extends Model
         }
     }
 
+    public function getMoviesFlyer()
+    {
+        try {
+            $query = $this->db->connect()->query('
+        SELECT 
+            p.*, 
+            COALESCE(json_agg(
+                json_build_object(
+                    \'idactor\', a.idactor, 
+                    \'nombre\', a.nombre, 
+                    \'apellido\', a.apellido, 
+                    \'personaje\', c.personaje
+                )
+            ) FILTER (WHERE a.idactor IS NOT NULL), \'[]\') as actores,
+            json_build_object(
+                \'iddirector\', d.iddirector, 
+                \'nombre\', d.nombre, 
+                \'apellido\', d.apellido
+            ) as director
+        FROM peliculas p
+        LEFT JOIN casting c ON p.idpeliculas = c.idpeliculas
+        LEFT JOIN actores a ON c.idactor = a.idactor
+        LEFT JOIN directores d ON p.iddirector = d.iddirector
+        GROUP BY p.idpeliculas, d.iddirector
+        LIMIT 8
+    ');
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getMoviesFlyer->PDOException ' . $e);
+            return [];
+        }
+    }
+
+
+    public function getAllSales()
+    {
+        try {
+            $query = $this->db->connect()->query("
+            SELECT 
+                p.titulo,
+                f.fecha,
+                f.hora_inicio AS hora,
+                s.nombre_sala AS sala,
+                COUNT(v.idventa) AS cantidad,
+                SUM(v.precionentrada) AS total
+            FROM ventas v
+            JOIN funciones f ON v.idfuncion = f.idfuncion
+            JOIN peliculas p ON f.idpeliculas = p.idpeliculas
+            JOIN sala s ON f.idsala = s.idsala
+            GROUP BY p.titulo, f.fecha, f.hora_inicio, s.nombre_sala
+        ");
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('DashboardModel::getAllSales->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function getMonthlyRevenue()
+    {
+        try {
+            $query = $this->db->connect()->query("
+                SELECT 
+                    TO_CHAR(fecha_venta, 'Month') AS mes, 
+                    SUM(precionentrada) AS ingresos
+                FROM ventas
+                GROUP BY TO_CHAR(fecha_venta, 'Month')
+                ORDER BY TO_CHAR(fecha_venta, 'Month')
+            ");
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getMonthlyRevenue->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function getTopMovies()
+    {
+        try {
+            $query = $this->db->connect()->query("
+                SELECT 
+                    p.titulo, 
+                    SUM(v.precionentrada) AS ingresos
+                FROM ventas v
+                JOIN funciones f ON v.idfuncion = f.idfuncion
+                JOIN peliculas p ON f.idpeliculas = p.idpeliculas
+                GROUP BY p.titulo
+                ORDER BY ingresos DESC
+                LIMIT 5
+            ");
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('DashboardModel::getTopMovies->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function getTopUsers($limit = 3)
+    {
+        try {
+            $query = $this->db->connect()->query("
+                SELECT 
+                    CONCAT(c.nomb_cli, ' ', c.ape_cli) AS nombre, 
+                    COUNT(v.idventa) AS entradas
+                FROM ventas v
+                JOIN cliente c ON v.idcliente = c.idcliente
+                GROUP BY nombre
+                ORDER BY entradas DESC
+                LIMIT $limit
+            ");
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getTopUsers->PDOException ' . $e);
+            return [];
+        }
+    }
+
+    public function getSalesByUser($id)
+    {
+        try {
+            $query = $this->db->connect()->prepare("
+                SELECT 
+                    p.titulo,
+                    f.fecha,
+                    f.hora_inicio AS hora,
+                    s.nombre_sala AS sala,
+                    COUNT(v.idventa) AS cantidad,
+                    SUM(v.precionentrada) AS total
+                FROM ventas v
+                JOIN funciones f ON v.idfuncion = f.idfuncion
+                JOIN peliculas p ON f.idpeliculas = p.idpeliculas
+                JOIN sala s ON f.idsala = s.idsala
+                WHERE v.idcliente = :id
+                GROUP BY p.titulo, f.fecha, f.hora_inicio, s.nombre_sala
+            ");
+            $query->execute(['id' => $id]);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('MoviesModel::getSalesByUser->PDOException ' . $e);
+            return [];
+        }
+    }
+
 
     public function getMovieById($id)
     {

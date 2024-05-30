@@ -1,5 +1,4 @@
-<?php
-require_once "./views/components/head.php";
+<?php require_once "./views/components/head.php";
 ?>
 
 <div class="pt-[8rem]">
@@ -17,7 +16,10 @@ require_once "./views/components/head.php";
         <div class="container-stats mx-auto container bg-[#F5F9FF] rounded-xl px-[3rem] py-[2rem] border border-[#E6F0FF]">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white p-4 rounded-lg shadow">
-                    <canvas id="moviesChart"></canvas>
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <canvas id="topMoviesChart"></canvas>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow">
                     <canvas id="roomsChart"></canvas>
@@ -26,7 +28,7 @@ require_once "./views/components/head.php";
                     <canvas id="usersChart"></canvas>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow">
-                    <canvas id="revenueChart"></canvas>
+                    <canvas id="topUsersChart"></canvas>
                 </div>
             </div>
         </div>
@@ -39,14 +41,50 @@ require_once "./views/components/footer.php";
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var ctxMovies = document.getElementById('moviesChart').getContext('2d');
-    var moviesChart = new Chart(ctxMovies, {
+    var monthlyRevenueData = <?= json_encode(array_column($this->monthlyRevenue, 'mes')) ?>;
+    var monthlyRevenueCounts = <?= json_encode(array_column($this->monthlyRevenue, 'ingresos')) ?>;
+
+    if (monthlyRevenueData.length === 1) {
+        monthlyRevenueData.push('Next Month');
+        monthlyRevenueCounts.push(0);
+    }
+
+    var ctxMonthlyRevenue = document.getElementById('monthlyRevenueChart').getContext('2d');
+    var monthlyRevenueChart = new Chart(ctxMonthlyRevenue, {
+        type: 'bar', 
+        data: {
+            labels: monthlyRevenueData,
+            datasets: [{
+                label: 'Ingresos Mensuales',
+                data: monthlyRevenueCounts,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    barThickness: 30 
+                }
+            }
+        }
+    });
+
+    var topMoviesData = <?= json_encode(array_column($this->topMovies, 'titulo')) ?>;
+    var topMoviesCounts = <?= json_encode(array_column($this->topMovies, 'ingresos')) ?>;
+
+    var ctxTopMovies = document.getElementById('topMoviesChart').getContext('2d');
+    var topMoviesChart = new Chart(ctxTopMovies, {
         type: 'bar',
         data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+            labels: topMoviesData,
             datasets: [{
-                label: 'Películas Estrenadas',
-                data: [12, 19, 3, 5, 2, 3],
+                label: 'Ingresos por Película',
+                data: topMoviesCounts,
                 backgroundColor: 'rgba(28, 80, 141, 0.5)',
                 borderColor: 'rgba(28, 80, 141, 1)',
                 borderWidth: 1
@@ -61,14 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    var roomsData = <?= json_encode(array_column($this->rooms, 'tipo_sala')) ?>;
+    var roomsCounts = <?= json_encode(array_count_values(array_column($this->rooms, 'tipo_sala'))) ?>;
+
     var ctxRooms = document.getElementById('roomsChart').getContext('2d');
     var roomsChart = new Chart(ctxRooms, {
         type: 'pie',
         data: {
-            labels: ['IMAX', '3D', '2D', 'VIP', '4DX'],
+            labels: Object.keys(roomsCounts),
             datasets: [{
                 label: 'Tipos de Salas',
-                data: [5, 10, 15, 20, 10],
+                data: Object.values(roomsCounts),
                 backgroundColor: [
                     'rgba(28, 80, 141, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
@@ -88,14 +129,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    var usersData = <?= json_encode(array_column($this->users, 'nombre')) ?>;
+    var usersCounts = <?= json_encode(array_fill(0, count($this->users), 1)) ?>;
+
     var ctxUsers = document.getElementById('usersChart').getContext('2d');
     var usersChart = new Chart(ctxUsers, {
         type: 'line',
         data: {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+            labels: usersData,
             datasets: [{
                 label: 'Usuarios Registrados',
-                data: [50, 60, 70, 80, 90, 100],
+                data: usersCounts,
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -111,28 +155,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    var ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-    var revenueChart = new Chart(ctxRevenue, {
-        type: 'doughnut',
+    var topUsersData = <?= json_encode(array_column($this->topUsers, 'nombre')) ?>;
+    var topUsersCounts = <?= json_encode(array_column($this->topUsers, 'entradas')) ?>;
+
+    var ctxTopUsers = document.getElementById('topUsersChart').getContext('2d');
+    var topUsersChart = new Chart(ctxTopUsers, {
+        type: 'bar',
         data: {
-            labels: ['Boletos', 'Comida', 'Merchandising', 'Publicidad'],
+            labels: topUsersData,
             datasets: [{
-                label: 'Ingresos',
-                data: [20000, 15000, 10000, 5000],
-                backgroundColor: [
-                    'rgba(28, 80, 141, 0.5)',
-                    'rgba(54, 162, 235, 0.5)',
-                    'rgba(75, 192, 192, 0.5)',
-                    'rgba(255, 206, 86, 0.5)'
-                ],
-                borderColor: [
-                    'rgba(28, 80, 141, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
+                label: 'Usuarios con Más Entradas',
+                data: topUsersCounts,
+                backgroundColor: 'rgba(28, 80, 141, 0.5)',
+                borderColor: 'rgba(28, 80, 141, 1)',
                 borderWidth: 1
             }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 });

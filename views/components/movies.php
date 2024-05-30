@@ -1,4 +1,4 @@
-<div class="container mx-auto mt-8">
+<div class="container mx-auto mt-8 pb-6">
     <h2 class="text-[20px] font-semibold pb-8 pt-6">EN CARTELERA</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <?php foreach ($this->movies as $movie) : ?>
@@ -19,7 +19,7 @@
             </div>
         <?php endforeach; ?>
     </div>
-    <div class="flex items-center justify-end mt-4">
+    <!-- <div class="flex items-center justify-end mt-4">
         <a href="/Cine-Colombia/movies/">
             <button class="button-cartelera bg-white border border-[#1c508d] hover:bg-[#1c508d] text-white py-3 px-5 rounded-full flex items-center">
                 <h3 class="text-[#1c508d]">Ver todo</h3>
@@ -28,5 +28,5 @@
                 </svg>
             </button>
         </a>
-    </div>
+    </div> -->
 </div>

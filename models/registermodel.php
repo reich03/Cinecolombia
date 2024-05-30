@@ -13,31 +13,35 @@ class RegisterModel extends Model
     {
     }
 
+    public function isEmailRegistered($email, $table, $emailField)
+    {
+        try {
+            $query = $this->db->connect()->prepare("SELECT COUNT(*) AS count FROM $table WHERE $emailField = :email");
+            $query->execute(['email' => $email]);
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result['count'] > 0;
+        } catch (PDOException $e) {
+            error_log('RegisterModel::isEmailRegistered->PDOException ' . $e);
+            return false;
+        }
+    }
+
     public function register($email, $password, $first_name, $last_name, $phone, $user, $role)
     {
         try {
-            if ($role == 1) {
-                $table = 'cliente';
-                $fields = [
-                    'correo' => 'correo_cli',
-                    'clave' => 'clave_cli',
-                    'nombre' => 'nomb_cli',
-                    'apellido' => 'ape_cli',
-                    'telefono' => 'telefono',
-                    'user' => 'user',
-                    'rol' => 'idrol'
-                ];
-            } else {
-                $table = 'empleado';
-                $fields = [
-                    'correo' => 'correo_emple',
-                    'clave' => 'clave_emple',
-                    'nombre' => 'nomb_emple',
-                    'apellido' => 'ape_emple',
-                    'telefono' => 'telefono',
-                    'user' => 'user',
-                    'rol' => 'idrol'
-                ];
+            $table = $role == 1 ? 'cliente' : 'empleado';
+            $fields = [
+                'correo' => $role == 1 ? 'correo_cli' : 'correo_emple',
+                'clave' => $role == 1 ? 'clave_cli' : 'clave_emple',
+                'nombre' => $role == 1 ? 'nomb_cli' : 'nomb_emple',
+                'apellido' => $role == 1 ? 'ape_cli' : 'ape_emple',
+                'telefono' => 'telefono',
+                'user' => 'user',
+                'rol' => 'idrol'
+            ];
+
+            if ($this->isEmailRegistered($email, $table, $fields['correo'])) {
+                return 'email_exists';
             }
 
             $query = $this->db->connect()->prepare("

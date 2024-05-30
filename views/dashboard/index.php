@@ -20,7 +20,7 @@ $isEmployee = $user['user_type'] == 'empleado';
         </div>
 
         <div class="container-dashboard bg-[#F5F9FF] rounded-md px-[3rem] py-[2rem] border border-[#E6F0FF] h-[20rem]">
-                <h2 class="text-2xl font-bold mb-6">BIENVENIDO <?= $name['nombre']; ?>!</h2>
+            <h2 class="text-2xl font-bold mb-6">BIENVENIDO <?= $name['nombre']; ?>!</h2>
 
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -35,6 +35,9 @@ $isEmployee = $user['user_type'] == 'empleado';
                 </a>
                 <a href="/Cine-Colombia/dashboard/functiones" class="flex items-center justify-center bg-indigo-500 text-white p-4 rounded-lg shadow hover:bg-indigo-600">
                     <i class="fa-regular fa-clock mr-[3px]"></i> Administrar Funciones
+                </a>
+                <a href="/Cine-Colombia/dashboard/sales" class="flex items-center justify-center bg-[#2dd4bf] text-white p-4 rounded-lg shadow hover:bg-[#0d9488]">
+                    <i class="fa-solid fa-money-bill mr-[3px]"></i> Administrar Ventas
                 </a>
                 <a href="/Cine-Colombia/dashboard/statistics" class="flex items-center justify-center bg-red-500 text-white p-4 rounded-lg shadow hover:bg-red-600">
                     <i class="fas fa-chart-line mr-2"></i> Ver Estadísticas

@@ -61,6 +61,8 @@ require_once "./views/components/add-rooms.php";
                     $('#roomName').val(room.nombre_sala);
                     $('#roomCapacity').val(room.capacidad);
                     $('#roomType').val(room.tipo_sala);
+                    $('#cantPrefe').val(room.cant_prefe);
+                    $('#cantGen').val(room.cant_gen);
                     $('#roomPreferential').prop('checked', room.preferencial);
                     $('#roomModal').removeClass('hidden');
                 }
@@ -73,6 +75,20 @@ require_once "./views/components/add-rooms.php";
 
         $('#roomForm').on('submit', function(e) {
             e.preventDefault();
+
+            var capacidad = parseInt($('#roomCapacity').val());
+            var cantPrefe = parseInt($('#cantPrefe').val());
+            var cantGen = parseInt($('#cantGen').val());
+
+            if (cantPrefe + cantGen !== capacidad) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'La suma de Cantidad Preferencial y Cantidad General debe ser igual a la Capacidad'
+                });
+                return;
+            }
+
             var formData = $(this).serialize();
             var url = $('#roomId').val() ? '/Cine-Colombia/dashboard/updateRoom' : '/Cine-Colombia/dashboard/createRoom';
             $.ajax({

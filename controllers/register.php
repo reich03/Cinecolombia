@@ -24,8 +24,8 @@ class Register extends Controller
         $first_name = $this->getPost('first_name');
         $last_name = $this->getPost('last_name');
         $phone = $this->getPost('phone');
-        $user = $first_name;  
-        $role = 1; 
+        $user = $first_name;
+        $role = 1;
 
         if ($email !== $confirm_email) {
             echo '<script>
@@ -53,7 +53,21 @@ class Register extends Controller
             return;
         }
 
-        if ($this->model->register($email, $password, $first_name, $last_name, $phone, $user, $role)) {
+        $registrationResult = $this->model->register($email, $password, $first_name, $last_name, $phone, $user, $role);
+        if ($registrationResult === 'email_exists') {
+            echo '<script>
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "El correo electrónico ya está registrado"
+                }).then(() => {
+                    window.location.href = "' . constant('URL') . '/register";
+                });
+            </script>';
+            return;
+        }
+
+        if ($registrationResult) {
             echo '<script>
                 Swal.fire({
                     icon: "success",
@@ -77,4 +91,3 @@ class Register extends Controller
         }
     }
 }
-?>

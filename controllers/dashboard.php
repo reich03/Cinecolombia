@@ -36,9 +36,22 @@ class Dashboard extends Controller
     }
 
 
-
     function statistics()
     {
+        $movies = $this->model->getAllMovies();
+        $rooms = $this->model->getAllRooms();
+        $users = $this->model->getAllUsers();
+        $monthlyRevenue = $this->model->getMonthlyRevenue();
+        $topMovies = $this->model->getTopMovies();
+        $topUsers = $this->model->getTopUsers(3);
+
+        $this->view->movies = $movies;
+        $this->view->rooms = $rooms;
+        $this->view->users = $users;
+        $this->view->monthlyRevenue = $monthlyRevenue;
+        $this->view->topMovies = $topMovies;
+        $this->view->topUsers = $topUsers;
+
         $this->view->render('dashboard/statistics');
     }
 
@@ -87,6 +100,17 @@ class Dashboard extends Controller
     {
         $actors = $this->model->getAllActors();
         echo json_encode($actors);
+    }
+
+    function sales()
+    {
+        $this->view->render('dashboard/sales');
+    }
+
+    function getSales()
+    {
+        $sales = $this->model->getAllSales();
+        echo json_encode($sales);
     }
 
     function createUser()
@@ -212,10 +236,9 @@ class Dashboard extends Controller
         $function = $this->model->getFunctionById($functionId);
         echo json_encode($function);
     }
-    public function getOcupiedSeats($idFuncion) {
+    public function getOcupiedSeats($idFuncion)
+    {
         $ocupiedSeats = $this->model->getOcupiedSeatsByFunction($idFuncion);
         echo json_encode($ocupiedSeats);
     }
-    
-    
 }

@@ -18,7 +18,7 @@
                     <h3 class="font-semibold text-black">CINE</h3>
                 </article>
                 <ul class="py-5 px-2">
-                    <li><a href="#" class="block py-1 hover:text-gray-400">Cartelera</a></li>
+                    <li><a href="/Cine-Colombia/movies/" class="block py-1 hover:text-gray-400">Cartelera</a></li>
                     <li><a href="#" class="block py-1 hover:text-gray-400">Pronto</a></li>
                     <li><a href="#" class="block py-1 hover:text-gray-400">Multiplex</a></li>
                     <li><a href="#" class="block py-1 hover:text-gray-400">Festivales</a></li>

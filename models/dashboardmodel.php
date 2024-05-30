@@ -409,10 +409,6 @@ class DashboardModel extends MoviesModel
         }
     }
 
-
-
-
-
     public function insertFunction($data)
     {
         try {
